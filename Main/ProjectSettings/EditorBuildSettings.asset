@@ -8,9 +8,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/01 Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/01 Scenes/BasicScene.unity
     guid: 9eaf0ce325824944089a348262e4eefb
+  - enabled: 1
+    path: Assets/01 Scenes/MultiplayerTest.unity
+    guid: 572986c976da0ce4cb54368e90ca77e7
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 838109dcb0533d940ac2bd374a07c1a6, type: 2}

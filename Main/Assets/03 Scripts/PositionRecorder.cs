@@ -6,13 +6,13 @@ using UnityEngine;
 
 public class PositionRecorder : MonoBehaviour
 {
-    private GameObject player;
+    public GameObject player;
     private int frequence = 120;
     private float realFrequency;
 
     // Bools controlling data exportation
 
-    private bool evaluationDataExported;
+    public bool evaluationDataExported;
     private bool dataExported = false;
 
     private string filename;
@@ -24,14 +24,12 @@ public class PositionRecorder : MonoBehaviour
 
     void Start()
     {
-        player = this.gameObject;
-        evaluationDataExported = GameObject.FindGameObjectWithTag("Canvas").GetComponent<UserResponsesMultiplayer>().dataExported;
         // To PC
 
-        //filename = Application.streamingAssetsPath + "/Position.csv";
+        filename = Application.streamingAssetsPath + "/Position.csv";
 
         // To headset
-        filename = Application.persistentDataPath + "/Position.csv";
+        //filename = Application.persistentDataPath + "/Position.csv";
 
         UpdateInvoke();
     }
@@ -50,10 +48,14 @@ public class PositionRecorder : MonoBehaviour
 
     public void Update()
     {
+        evaluationDataExported = GameObject.FindGameObjectWithTag("Canvas").GetComponent<UserResponsesMultiplayer>().dataExported;
+
         if (evaluationDataExported && !dataExported)
         {
             ExportData();
             dataExported = true;
+
+            Debug.Log("Position data exported.");
         }
     }
 

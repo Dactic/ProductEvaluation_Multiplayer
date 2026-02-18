@@ -43,10 +43,10 @@ public class UserResponsesMultiplayer : MonoBehaviour
     {
         // To PC
 
-        //filename = Application.streamingAssetsPath + "/Responses.csv";
+        filename = Application.streamingAssetsPath + "/Responses.csv";
 
         // To headset
-        filename = Application.persistentDataPath + "/Responses.csv";
+        //filename = Application.persistentDataPath + "/Responses.csv";
     }
 
     public void NextSemanticScale()
@@ -85,6 +85,7 @@ public class UserResponsesMultiplayer : MonoBehaviour
             {
                 // END HERE
                 ExportData();
+                dataExported = true;
             }
         }
     }

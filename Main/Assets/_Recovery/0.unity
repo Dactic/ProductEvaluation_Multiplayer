@@ -13004,8 +13004,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01314cc9e0d7f9d4d8d5816dc584fcc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PositionRecorder
-  player: {fileID: 430272004}
-  evaluationDataExported: 0
+  player: {fileID: 1126036446}
 --- !u!1 &1127354790
 GameObject:
   m_ObjectHideFlags: 0
