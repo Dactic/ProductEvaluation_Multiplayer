@@ -1,0 +1,2 @@
+C:\Users\dacti\Documents\GitHub\ProductEvaluation_Multiplayer\Main\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\CMakeLists.txt
+C:\Users\dacti\Documents\GitHub\ProductEvaluation_Multiplayer\Main\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\GameActivity\CMakeLists.txt
