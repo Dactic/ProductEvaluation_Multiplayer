@@ -29,7 +29,7 @@ public class UserResponsesMultiplayer : MonoBehaviour
 
     private string filename;
     private int counter = 0;
-    private bool dataExported = false;
+    public bool dataExported = false;
 
     private void Start()
     {
@@ -41,7 +41,12 @@ public class UserResponsesMultiplayer : MonoBehaviour
 
     private void Update()
     {
-        filename = Application.streamingAssetsPath + "\\" + "Responses" + ".csv";
+        // To PC
+
+        //filename = Application.streamingAssetsPath + "/Responses.csv";
+
+        // To headset
+        filename = Application.persistentDataPath + "/Responses.csv";
     }
 
     public void NextSemanticScale()
