@@ -26,10 +26,11 @@ public class PositionRecorder : MonoBehaviour
     {
         // To PC
 
-        filename = Application.streamingAssetsPath + "/Position.csv";
+        //filename = Application.streamingAssetsPath + "/Position.csv";
 
         // To headset
-        //filename = Application.persistentDataPath + "/Position.csv";
+        
+        filename = Application.persistentDataPath + "/Position.csv";
 
         UpdateInvoke();
     }

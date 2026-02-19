@@ -33,20 +33,17 @@ public class UserResponsesMultiplayer : MonoBehaviour
 
     private void Start()
     {
+        // To PC
+
+        //filename = Application.streamingAssetsPath + "/Responses.csv";
+
+        // To headset
+        filename = Application.persistentDataPath + "/Responses.csv";
+
         for (int i = 1; i < questions.Length; i++)
         {
             questions[i].SetActive(false);
         }
-    }
-
-    private void Update()
-    {
-        // To PC
-
-        filename = Application.streamingAssetsPath + "/Responses.csv";
-
-        // To headset
-        //filename = Application.persistentDataPath + "/Responses.csv";
     }
 
     public void NextSemanticScale()
