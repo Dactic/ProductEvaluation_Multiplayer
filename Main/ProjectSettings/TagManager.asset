@@ -30,6 +30,7 @@ TagManager:
   - SamplesInfoPanel
   - QDSUIToggleCheckboxRadio
   - Canvas
+  - Product
   layers:
   - Default
   - TransparentFX
