@@ -19,7 +19,6 @@ public class Manager : NetworkBehaviour
     {
         // Llama al RPC para todos
         EnableExperimentRpc();
-        enableExperiment = true;
     }
 
     [Rpc(RpcSources.All, RpcTargets.All)]
@@ -27,5 +26,10 @@ public class Manager : NetworkBehaviour
     {
         canvas.transform.position = canvasPos;
         product.transform.position = productPos;
+    }
+
+    public void ExperimentStart()
+    {
+        enableExperiment = true;
     }
 }

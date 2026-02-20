@@ -51,7 +51,7 @@ public class UserResponsesMultiplayer : MonoBehaviour
 
     public void FixedUpdate()
     {
-        // Timer starts once experiment starts and it stops once users had responded to last question
+        // Timer starts once experiment starts
 
         if (GameObject.FindGameObjectWithTag("Manager").GetComponent<Manager>().enableExperiment && counter < questions.Length)
         {
