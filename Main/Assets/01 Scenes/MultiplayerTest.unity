@@ -15624,6 +15624,7 @@ MonoBehaviour:
   confidenceResponsesP1: []
   confidenceResponsesP2: []
   confidenceResponsesP3: []
+  timer: 0
   dataExported: 0
 --- !u!1 &1293298174
 GameObject:
@@ -16229,7 +16230,7 @@ GameObject:
   - component: {fileID: 1363396466}
   m_Layer: 0
   m_Name: Manager
-  m_TagString: Untagged
+  m_TagString: Manager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16249,6 +16250,7 @@ MonoBehaviour:
   product: {fileID: 866982913}
   canvas: {fileID: 240431466}
   button: {fileID: 1538410789}
+  enableExperiment: 0
 --- !u!4 &1363396465
 Transform:
   m_ObjectHideFlags: 0

@@ -7,7 +7,11 @@ public class Manager : NetworkBehaviour
     public NetworkObject canvas;  // igual
     public GameObject button;
 
-    // Posiciones objetivo
+    [Header("Experiment has started")]
+    public bool enableExperiment = false;
+
+    // Positions
+
     private Vector3 canvasPos = new Vector3(0, 1.75f, 1.5f);
     private Vector3 productPos = new Vector3(0, 1.065f, 1);
 
@@ -15,6 +19,7 @@ public class Manager : NetworkBehaviour
     {
         // Llama al RPC para todos
         EnableExperimentRpc();
+        enableExperiment = true;
     }
 
     [Rpc(RpcSources.All, RpcTargets.All)]

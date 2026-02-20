@@ -27,6 +27,9 @@ public class UserResponsesMultiplayer : MonoBehaviour
     public List<float> confidenceResponsesP2 = new List<float>();
     public List<float> confidenceResponsesP3 = new List<float>();
 
+    [Header("Timer")]
+    public float timer = 0;
+
     private string filename;
     private int counter = 0;
     public bool dataExported = false;
@@ -43,6 +46,16 @@ public class UserResponsesMultiplayer : MonoBehaviour
         for (int i = 1; i < questions.Length; i++)
         {
             questions[i].SetActive(false);
+        }
+    }
+
+    public void FixedUpdate()
+    {
+        // Timer starts once experiment starts and it stops once users had responded to last question
+
+        if (GameObject.FindGameObjectWithTag("Manager").GetComponent<Manager>().enableExperiment && counter < questions.Length)
+        {
+            timer += Time.deltaTime;
         }
     }
 
@@ -75,7 +88,7 @@ public class UserResponsesMultiplayer : MonoBehaviour
             else
             {
                 //Change canvas position, as disabling it stops data exportation
-                gameObject.transform.position = new Vector3(0, -2, 0);
+                gameObject.transform.position = new Vector3(0, -10, 0);
             }
 
             if (counter == questions.Length)
@@ -115,12 +128,21 @@ public class UserResponsesMultiplayer : MonoBehaviour
     {
         TextWriter tw = new StreamWriter(filename, false);
 
+        // Responses 
+
         tw.WriteLine("Scale" + ";" + "Evaluation" + ";" + "Confidence P1" + ";" + "Confidence P2" + ";" + "Confidence P3");
 
         for (int i = 0; i < evaluationResponses.Count; i++)
         {
             tw.WriteLine(questions[i].name + ";" + evaluationResponses[i] + ";" + confidenceResponsesP1[i] + ";" + confidenceResponsesP2[i] + ";" + confidenceResponsesP3[i]);
         }
+
+        tw.WriteLine();
+
+        // Timer
+
+        tw.WriteLine("Timer");
+        tw.WriteLine(timer.ToString("F2"));
 
         tw.Close();
 
