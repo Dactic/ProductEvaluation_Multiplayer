@@ -21,11 +21,22 @@ public class Manager : NetworkBehaviour
         EnableExperimentRpc();
     }
 
+    public void DisableExperiment()
+    {
+        DisableExperimentRcp();
+    }
+
     [Rpc(RpcSources.All, RpcTargets.All)]
     void EnableExperimentRpc()
     {
         canvas.transform.position = canvasPos;
         product.transform.position = productPos;
+    }
+
+    void DisableExperimentRcp()
+    {
+        canvas.transform.position = new Vector3(0, -10, 0);
+        product.transform.position = new Vector3(0, -10, 0);
     }
 
     public void ExperimentStart()

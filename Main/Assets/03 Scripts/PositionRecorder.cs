@@ -51,7 +51,7 @@ public class PositionRecorder : MonoBehaviour
     {
         if (GameObject.FindGameObjectWithTag("Canvas") != null)
         {
-            evaluationDataExported = GameObject.FindGameObjectWithTag("Canvas").GetComponent<UserResponsesMultiplayer>().dataExported;
+            evaluationDataExported = GameObject.FindGameObjectWithTag("Canvas").GetComponent<NetworkedExperimentManager>().dataExported;
         }
 
         if (evaluationDataExported && !dataExported)

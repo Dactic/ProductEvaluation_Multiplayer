@@ -23,15 +23,18 @@ public class NetworkedExperimentManager : NetworkBehaviour
     [Networked] public float ValueConfidenceP3 { get; set; }
 
     // Timer local por casco
-    private float Timer = 0f;
+    public float Timer = 0f;
 
     // Listas locales para guardar respuestas
-    private List<float> evaluationResponses = new List<float>();
-    private List<float> confidenceResponsesP1 = new List<float>();
-    private List<float> confidenceResponsesP2 = new List<float>();
-    private List<float> confidenceResponsesP3 = new List<float>();
+    public List<float> evaluationResponses = new List<float>();
+    public List<float> confidenceResponsesP1 = new List<float>();
+    public List<float> confidenceResponsesP2 = new List<float>();
+    public List<float> confidenceResponsesP3 = new List<float>();
 
     private string filename;
+
+    [Header("Data exported")]
+    public bool dataExported = false;
 
     // ----------------------------
     // SPAWNED
@@ -68,11 +71,19 @@ public class NetworkedExperimentManager : NetworkBehaviour
     // ----------------------------
     public void NextQuestion()
     {
+        // Guardar localmente antes de enviar RPC
+        SaveLocalResponses();
+
+        // Enviar RPC para avanzar pregunta y resetear sliders
         RPC_NextQuestion();
     }
 
     public void PreviousQuestion()
     {
+        // Eliminar última respuesta local antes de enviar RPC
+        RemoveLastResponses();
+
+        // Enviar RPC para retroceder pregunta y resetear sliders
         RPC_PreviousQuestion();
     }
 
@@ -101,15 +112,6 @@ public class NetworkedExperimentManager : NetworkBehaviour
 
         CurrentQuestion++;
         ResetSliders();
-
-        // Todos los clientes guardan los valores actuales en sus listas locales
-        SaveLocalResponses();
-
-        // Última pregunta → exportar CSV local
-        if (CurrentQuestion >= questions.Length)
-        {
-            ExportData();
-        }
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
@@ -118,10 +120,6 @@ public class NetworkedExperimentManager : NetworkBehaviour
         if (CurrentQuestion <= 0) return;
 
         CurrentQuestion--;
-
-        // Todos los clientes eliminan la última respuesta guardada
-        RemoveLastResponses();
-
         ResetSliders();
     }
 
@@ -134,6 +132,13 @@ public class NetworkedExperimentManager : NetworkBehaviour
         confidenceResponsesP1.Add(ValueConfidenceP1);
         confidenceResponsesP2.Add(ValueConfidenceP2);
         confidenceResponsesP3.Add(ValueConfidenceP3);
+
+        // Exportar CSV si hemos terminado
+        if (CurrentQuestion >= questions.Length - 1 && !dataExported)
+        {
+            ExportData();
+            dataExported = true;
+        }
     }
 
     void RemoveLastResponses()
@@ -176,6 +181,8 @@ public class NetworkedExperimentManager : NetworkBehaviour
     // ----------------------------
     void ExportData()
     {
+        Debug.Log("DataExported");
+
         TextWriter tw = new StreamWriter(filename, false);
 
         tw.WriteLine("Scale" + ";" + "Evaluation" + ";" + "Confidence P1" + ";" + "Confidence P2" + ";" + "Confidence P3");
