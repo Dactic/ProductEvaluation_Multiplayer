@@ -18,7 +18,7 @@ public class PositionRecorder : MonoBehaviour
 
     void Start()
     {
-        filename = Application.persistentDataPath + $"/Position_{player.name}.csv";
+        filename = Application.persistentDataPath + $"/Position.csv";
 
         manager = FindFirstObjectByType<NetworkedExperimentManager>();
 

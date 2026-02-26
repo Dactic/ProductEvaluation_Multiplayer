@@ -10901,7 +10901,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43f86b14a27b52f4f9298c33015b5c26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Oculus.Interaction::Oculus.Interaction.Grabbable
-  _transferOnSecondSelection: 0
+  _transferOnSecondSelection: 1
   _addNewPointsToFront: 0
   _forwardElement: {fileID: 0}
   _oneGrabTransformer: {fileID: 0}
@@ -10910,8 +10910,8 @@ MonoBehaviour:
   _maxGrabPoints: -1
   _rigidbody: {fileID: 866982916}
   _kinematicWhileSelected: 1
-  _throwWhenUnselected: 1
-  _forceKinematicDisabled: 0
+  _throwWhenUnselected: 0
+  _forceKinematicDisabled: 1
 --- !u!54 &866982916
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -16448,9 +16448,6 @@ MonoBehaviour:
   _CanvasPosX: 0
   _CanvasPosY: 0
   _CanvasPosZ: 0
-  _ProductPosX: 0
-  _ProductPosY: 0
-  _ProductPosZ: 0
 --- !u!4 &1363396465
 Transform:
   m_ObjectHideFlags: 0
