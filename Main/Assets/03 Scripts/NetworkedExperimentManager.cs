@@ -22,68 +22,66 @@ public class NetworkedExperimentManager : NetworkBehaviour
     [Networked] public float ValueConfidenceP2 { get; set; }
     [Networked] public float ValueConfidenceP3 { get; set; }
 
-    // Timer local por casco
+    [Networked] public NetworkBool DataExported { get; set; }
+
+    // Timer
     public float Timer = 0f;
 
-    // Listas locales para guardar respuestas
-    public List<float> evaluationResponses = new List<float>();
-    public List<float> confidenceResponsesP1 = new List<float>();
-    public List<float> confidenceResponsesP2 = new List<float>();
-    public List<float> confidenceResponsesP3 = new List<float>();
+    // Local response storage
+    private List<float> evaluationResponses = new();
+    private List<float> confidenceResponsesP1 = new();
+    private List<float> confidenceResponsesP2 = new();
+    private List<float> confidenceResponsesP3 = new();
 
     private string filename;
+    private Manager manager;
 
-    [Header("Data exported")]
-    public bool dataExported = false;
+    private bool lastExported = false;
 
     // ----------------------------
     // SPAWNED
     // ----------------------------
     public override void Spawned()
     {
-        filename = Application.persistentDataPath + "/Responses.csv";
+        manager = FindFirstObjectByType<Manager>();
+
+        filename = Application.persistentDataPath + $"/Responses_{Runner.LocalPlayer.PlayerId}.csv";
 
         if (HasStateAuthority)
             CurrentQuestion = 0;
 
-        // Conectar sliders a RPCs
         evaluationSlider.onValueChanged.AddListener((v) => RPC_SetSlider(1, v));
         confidenceSliderP1.onValueChanged.AddListener((v) => RPC_SetSlider(2, v));
         confidenceSliderP2.onValueChanged.AddListener((v) => RPC_SetSlider(3, v));
         confidenceSliderP3.onValueChanged.AddListener((v) => RPC_SetSlider(4, v));
 
-        // Solo la primera pregunta visible
         for (int i = 0; i < questions.Length; i++)
             questions[i].SetActive(i == 0);
     }
 
     // ----------------------------
-    // TIMER
+    // TIMER (Fusion tick-based)
     // ----------------------------
-    public void FixedUpdate()
+    public override void FixedUpdateNetwork()
     {
-        if (CurrentQuestion < questions.Length)
-            Timer += Time.fixedDeltaTime;
+        if (manager == null) return;
+
+        if (manager.EnableExperimentFlag && !DataExported && CurrentQuestion < questions.Length)
+            Timer += Runner.DeltaTime;
     }
 
     // ----------------------------
-    // BOTONES
+    // BUTTONS
     // ----------------------------
     public void NextQuestion()
     {
-        // Guardar localmente antes de enviar RPC
         SaveLocalResponses();
-
-        // Enviar RPC para avanzar pregunta y resetear sliders
         RPC_NextQuestion();
     }
 
     public void PreviousQuestion()
     {
-        // Eliminar última respuesta local antes de enviar RPC
         RemoveLastResponses();
-
-        // Enviar RPC para retroceder pregunta y resetear sliders
         RPC_PreviousQuestion();
     }
 
@@ -103,7 +101,7 @@ public class NetworkedExperimentManager : NetworkBehaviour
     }
 
     // ----------------------------
-    // RPC BOTONES
+    // RPC QUESTIONS
     // ----------------------------
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     void RPC_NextQuestion()
@@ -124,7 +122,7 @@ public class NetworkedExperimentManager : NetworkBehaviour
     }
 
     // ----------------------------
-    // GUARDADO LOCAL
+    // SAVE LOCAL DATA
     // ----------------------------
     void SaveLocalResponses()
     {
@@ -133,11 +131,13 @@ public class NetworkedExperimentManager : NetworkBehaviour
         confidenceResponsesP2.Add(ValueConfidenceP2);
         confidenceResponsesP3.Add(ValueConfidenceP3);
 
-        // Exportar CSV si hemos terminado
-        if (CurrentQuestion >= questions.Length - 1 && !dataExported)
+        if (CurrentQuestion >= questions.Length - 1 && !lastExported)
         {
             ExportData();
-            dataExported = true;
+            lastExported = true;
+
+            if (HasStateAuthority && manager != null)
+                manager.DisableExperiment();
         }
     }
 
@@ -165,13 +165,12 @@ public class NetworkedExperimentManager : NetworkBehaviour
     // ----------------------------
     public override void Render()
     {
-        // Actualizar sliders sin disparar eventos
+        // Detecta cambio de DataExported
         evaluationSlider.SetValueWithoutNotify(ValueEvaluation);
         confidenceSliderP1.SetValueWithoutNotify(ValueConfidenceP1);
         confidenceSliderP2.SetValueWithoutNotify(ValueConfidenceP2);
         confidenceSliderP3.SetValueWithoutNotify(ValueConfidenceP3);
 
-        // Activar la pregunta correcta
         for (int i = 0; i < questions.Length; i++)
             questions[i].SetActive(i == CurrentQuestion);
     }
@@ -181,11 +180,9 @@ public class NetworkedExperimentManager : NetworkBehaviour
     // ----------------------------
     void ExportData()
     {
-        Debug.Log("DataExported");
+        using TextWriter tw = new StreamWriter(filename, false);
 
-        TextWriter tw = new StreamWriter(filename, false);
-
-        tw.WriteLine("Scale" + ";" + "Evaluation" + ";" + "Confidence P1" + ";" + "Confidence P2" + ";" + "Confidence P3");
+        tw.WriteLine("Scale;Evaluation;Confidence P1;Confidence P2;Confidence P3");
 
         for (int i = 0; i < evaluationResponses.Count; i++)
         {
@@ -201,7 +198,6 @@ public class NetworkedExperimentManager : NetworkBehaviour
         tw.WriteLine("Timer");
         tw.WriteLine(Timer.ToString("F2"));
 
-        tw.Close();
-        Debug.Log("Local CSV exported on this headset: " + filename);
+        Debug.Log("CSV exportado en: " + filename);
     }
 }

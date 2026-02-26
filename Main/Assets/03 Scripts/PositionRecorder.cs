@@ -1,5 +1,3 @@
-using Photon.Realtime;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -10,82 +8,54 @@ public class PositionRecorder : MonoBehaviour
     private int frequence = 120;
     private float realFrequency;
 
-    // Bools controlling data exportation
-
-    public bool evaluationDataExported;
     private bool dataExported = false;
-
     private string filename;
 
-    // Lists
+    private NetworkedExperimentManager manager;
 
     private List<float> posX = new();
     private List<float> posY = new();
 
     void Start()
     {
-        // To PC
+        filename = Application.persistentDataPath + $"/Position_{player.name}.csv";
 
-        //filename = Application.streamingAssetsPath + "/Position.csv";
-
-        // To headset
-        
-        filename = Application.persistentDataPath + "/Position.csv";
-
-        UpdateInvoke();
-    }
-
-    void UpdateInvoke()
-    {
-        if (frequence <= 0)
-        {
-            return;
-        }
+        manager = FindFirstObjectByType<NetworkedExperimentManager>();
 
         realFrequency = 1f / frequence;
-        CancelInvoke("RecordPosition");
-        InvokeRepeating("RecordPosition", 0, realFrequency);
+        InvokeRepeating(nameof(RecordPosition), 0, realFrequency);
     }
 
-    public void Update()
+    void Update()
     {
-        if (GameObject.FindGameObjectWithTag("Canvas") != null)
-        {
-            evaluationDataExported = GameObject.FindGameObjectWithTag("Canvas").GetComponent<NetworkedExperimentManager>().dataExported;
-        }
+        if (manager == null)
+            return;
 
-        if (evaluationDataExported && !dataExported)
+        // Exportar cuando el experimento ha terminado localmente
+        if (!dataExported && manager.CurrentQuestion >= manager.questions.Length)
         {
             ExportData();
             dataExported = true;
-
-            Debug.Log("Position data exported.");
+            Debug.Log("Position data exported: " + filename);
         }
     }
 
     void RecordPosition()
     {
-        // Records data while evaluating product
+        if (manager == null || dataExported) return;
 
-        if (!evaluationDataExported)
-        {
-            posX.Add(player.transform.position.x);
-            posY.Add(player.transform.position.z);
-        }
+        posX.Add(player.transform.position.x);
+        posY.Add(player.transform.position.z);
     }
 
     void ExportData()
     {
-        TextWriter tw = new StreamWriter(filename, false);
+        using TextWriter tw = new StreamWriter(filename, false);
 
-        tw.WriteLine("X" + ";" + "Y");
+        tw.WriteLine("X;Y");
 
         for (int i = 0; i < posX.Count; i++)
-        {
             tw.WriteLine(posX[i] + ";" + posY[i]);
-        }
-
-        tw.Close();
     }
 }
 
